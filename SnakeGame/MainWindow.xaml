@@ -11,6 +11,8 @@
         FontFamily="Segoe UI Light" FontSize="28"
         KeyDown="Window_KeyDown">
     <Grid>
+
+
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
@@ -30,6 +32,7 @@
                  Grid.Column="1"
                  Margin="0,0,0,20">
             <Canvas x:Name="GameCanvas"
+
                     Background="#101010"
                     Width="500" 
                     Height="500"
