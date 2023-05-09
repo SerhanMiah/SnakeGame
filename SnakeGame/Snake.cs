@@ -7,10 +7,7 @@ namespace SnakeGame
 	public class Snake
 	{
 		private const int InitialLength = 3;
-		private const int DefaultDirection = 0; // right
-
 		private List<Point> body;
-		private int direction;
 
 		public Snake(Point head)
 		{
@@ -20,30 +17,29 @@ namespace SnakeGame
 			{
 				body.Add(new Point(head.X - i, head.Y));
 			}
-
-			direction = DefaultDirection;
 		}
 
 		public Snake(int x, int y) : this(new Point(x, y)) { }
 
-		public void Move()
+
+		
+		public void Move(Direction direction)
 		{
-			// Move the snake in the current direction
 			Point head = body[0];
 			Point newHead = new Point(head.X, head.Y);
 
 			switch (direction)
 			{
-				case 0: // right
+				case Direction.Right:
 					newHead.X++;
 					break;
-				case 1: // down
+				case Direction.Down:
 					newHead.Y++;
 					break;
-				case 2: // left
+				case Direction.Left:
 					newHead.X--;
 					break;
-				case 3: // up
+				case Direction.Up:
 					newHead.Y--;
 					break;
 			}
@@ -52,12 +48,9 @@ namespace SnakeGame
 			body.RemoveAt(body.Count - 1);
 		}
 
-		public void SetDirection(int newDirection)
+		public void Grow()
 		{
-			if (Math.Abs(direction - newDirection) != 2) // don't allow opposite direction
-			{
-				direction = newDirection;
-			}
+			body.Add(body[body.Count - 1]);
 		}
 
 		public List<Point> GetBody()

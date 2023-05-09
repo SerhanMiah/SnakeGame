@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
 
 namespace SnakeGame
 {
@@ -16,106 +13,58 @@ namespace SnakeGame
 
 	public class GameState
 	{
-		private int score;
-		private bool gameOver;
-		private List<Position> snake;
-		private Food food;
+		public Snake Snake { get; private set; }
+		public Food Food { get; private set; }
+		public bool GameOver { get; private set; }
+		public Direction CurrentDirection { get; set; }
 		private int numRows;
 		private int numCols;
-		public Direction Direction { get; set; }
-		public Food Food { get => food; }
-		public int Score { get => score; }
-		public bool GameOver { get => gameOver; }
+		private Random random;
 
-		// Constructor
 		public GameState(int numRows, int numCols)
 		{
 			this.numRows = numRows;
 			this.numCols = numCols;
 
-			// Initialize the score and game over state
-			score = 0;
-			gameOver = false;
-
-			// Initialize the positions of the snake and food
-			snake = new List<Position> { new Position(numRows / 2, numCols / 2) };
-			SpawnFood();
+			Snake = new Snake(numRows / 2, numCols / 2);
+			random = new Random(); // Initialize the random object
+			Food = GenerateNewFood();
+			GameOver = false;
+			CurrentDirection = Direction.Right;
 		}
 
-		// Update the game state when the snake moves
+
 		public void MoveSnake(Direction direction)
 		{
-			// Get the current head position of the snake
-			Position head = snake[0];
+			CurrentDirection = direction;
+			Snake.Move(direction);
 
-			// Calculate the new head position based on the direction
-			int row = head.Row;
-			int col = head.Column;
-
-			switch (direction)
+			if (Snake.GetHead().X < 0 || Snake.GetHead().X >= numCols ||
+			    Snake.GetHead().Y < 0 || Snake.GetHead().Y >= numRows ||
+			    Snake.CollidesWithSelf())
 			{
-				case Direction.Up:
-					row--;
-					break;
-				case Direction.Down:
-					row++;
-					break;
-				case Direction.Left:
-					col--;
-					break;
-				case Direction.Right:
-					col++;
-					break;
-				default:
-					break;
-			}
-
-			Position newHead = new Position(row, col);
-
-			// Check if the new head position is valid (not out of bounds)
-			if (row < 0 || row >= numRows || col < 0 || col >= numCols)
-			{
-				// Snake collided with the walls
-				gameOver = true;
+				GameOver = true;
 				return;
 			}
 
-			// Check if the new head position collides with the snake's body
-			if (snake.Contains(newHead))
+			if (Snake.CollidesWith(Food.Location))
 			{
-				// Snake collided with itself
-				gameOver = true;
-				return;
-			}
-
-			// Add the new head to the snake's body
-			snake.Insert(0, newHead);
-
-			// Check if the new head position contains food
-			if (newHead.Equals(food))
-			{
-				// Snake ate the food
-				score++;
-				SpawnFood();
-			}
-			else
-			{
-				// Remove the tail of the snake
-				snake.RemoveAt(snake.Count - 1);
+				Snake.Grow();
+				Food = GenerateNewFood();
 			}
 		}
 
-		private void SpawnFood()
+		private Food GenerateNewFood()
 		{
-			Random random = new Random();
-			Position newFoodPosition;
+			int row, column;
 
 			do
 			{
-				newFoodPosition = new Position(random.Next(0, numRows), random.Next(0, numCols));
-			} while (snake.Contains(newFoodPosition));
+				row = random.Next(numRows);
+				column = random.Next(numCols);
+			} while (Snake.CollidesWith(new Point(column, row)));
 
-			food = new Food(newFoodPosition.Row, newFoodPosition.Column);
+			return new Food(numRows, numCols);
 		}
 	}
 }

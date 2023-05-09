@@ -1,54 +1,114 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace SnakeGame
 {
-	/// <summary>
-	/// Interaction logic for MainWindow.xaml
-	/// </summary>
 	public partial class MainWindow : Window
 	{
 		private GameState gameState;
+		private DispatcherTimer gameTimer;
+		private bool gameStarted = false;
+		private int score;
 
 		public MainWindow()
 		{
 			InitializeComponent();
-			gameState = new GameState(20, 20); // Set numRows and numCols according to your grid size
+			gameState = new GameState(20, 20);
 
-			Snake snake = new Snake(10, 10); // Initialize the snake with a starting position
-			DrawSnake(snake);
+			DrawSnake(gameState.Snake);
+			DrawFood(gameState.Food);
 
-			Food food = gameState.Food; // Get the food object from the gameState
-			DrawFood(food); // Draw the food on the canvas
+			score = 0;
+			UpdateScore();
+
+			gameTimer = new DispatcherTimer();
+			gameTimer.Interval = TimeSpan.FromMilliseconds(100);
+			gameTimer.Tick += GameTimer_Tick;
 		}
 
-		// Draw the food on the canvas
+		private void GameTimer_Tick(object sender, EventArgs e)
+		{
+			if (!gameStarted) return;
+
+			gameState.MoveSnake(gameState.CurrentDirection);
+
+			// Check if the snake collides with the food and update the score
+			if (gameState.Snake.CollidesWith(gameState.Food.Location))
+			{
+				score++; // Increment the score
+				UpdateScore(); // Update the score in the UI
+				gameState.Food.SpawnFood(); // Spawn a new food
+			}
+
+			DrawSnake(gameState.Snake);
+			DrawFood(gameState.Food);
+
+			if (gameState.GameOver)
+			{
+				gameTimer.Stop();
+				MessageBox.Show("Game Over!");
+			}
+		}
+
+		private void UpdateScore()
+		{
+			ScoreText.Text = $"Score: {score}";
+		}
+
+
+		private void StartButton_Click(object sender, RoutedEventArgs e)
+		{
+			gameStarted = !gameStarted;
+
+			if (gameStarted)
+			{
+				StartButton.Content = "Pause";
+				gameTimer.Start();
+			}
+			else
+			{
+				StartButton.Content = "Start";
+				gameTimer.Stop();
+			}
+		}
+
+		private void ResetButton_Click(object sender, RoutedEventArgs e)
+		{
+			gameStarted = false;
+			StartButton.Content = "Start";
+			gameTimer.Stop();
+			ResetGame();
+		}
+
+		private void ResetGame()
+		{
+			gameState = new GameState(20, 20);
+
+			DrawSnake(gameState.Snake);
+			DrawFood(gameState.Food);
+		}
+
 		private void DrawFood(Food food)
 		{
 			var rectangle = new Rectangle
 			{
-				Width = 20, // Set the width of the food
-				Height = 20, // Set the height of the food
-				Fill = Brushes.Red // Set the color of the food
+				Width = 20,
+				Height = 20,
+				Fill = Brushes.Red
 			};
 
-			Canvas.SetLeft(rectangle, food.Location.Column * 20); // Set the X position of the food
-			Canvas.SetTop(rectangle, food.Location.Row * 20); // Set the Y position of the food
+			Canvas.SetLeft(rectangle, food.Location.X * 20);
+			Canvas.SetTop(rectangle, food.Location.Y * 20);
 
 			GameCanvas.Children.Add(rectangle);
 		}
+
+
 
 		private void Window_KeyDown(object sender, KeyEventArgs e)
 		{
@@ -57,7 +117,7 @@ namespace SnakeGame
 				return;
 			}
 
-			Direction newDirection = gameState.Direction;
+			Direction newDirection = gameState.CurrentDirection;
 
 			switch (e.Key)
 			{
@@ -89,24 +149,24 @@ namespace SnakeGame
 					break;
 			}
 
-			gameState.Direction = newDirection;
+			gameState.CurrentDirection = newDirection;
 		}
 
 		private void DrawSnake(Snake snake)
 		{
-			GameCanvas.Children.Clear(); // Clear previous snake
+			GameCanvas.Children.Clear();
 
 			foreach (var segment in snake.GetBody())
 			{
 				var rectangle = new Rectangle
 				{
-					Width = 20, // Set the width of the snake segment
-					Height = 20, // Set the height of the snake segment
-					Fill = Brushes.Green // Set the color of the snake segment
+					Width = 20,
+					Height = 20,
+					Fill = Brushes.Green
 				};
 
-				Canvas.SetLeft(rectangle, segment.X * 20); // Set the X position of the segment
-				Canvas.SetTop(rectangle, segment.Y * 20); // Set the Y position of the segment
+				Canvas.SetLeft(rectangle, segment.X * 20);
+				Canvas.SetTop(rectangle, segment.Y * 20);
 
 				GameCanvas.Children.Add(rectangle);
 			}

@@ -11,8 +11,6 @@
         FontFamily="Segoe UI Light" FontSize="28"
         KeyDown="Window_KeyDown">
     <Grid>
-
-
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
@@ -32,11 +30,9 @@
                  Grid.Column="1"
                  Margin="0,0,0,20">
             <Canvas x:Name="GameCanvas"
-
                     Background="#101010"
                     Width="500" 
                     Height="500"
-                   
                     ClipToBounds="True"/>
         </Viewbox>
 
@@ -46,5 +42,12 @@
                    Text="Score: "
                    Margin="0, 10"
                    TextAlignment="Center"/>
+
+        <!-- Add Start and Reset buttons -->
+        <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" Margin="10">
+            <Button x:Name="StartButton" Content="Start" Click="StartButton_Click"/>
+            <Button x:Name="ResetButton" Content="Reset" Click="ResetButton_Click"/>
+
+        </StackPanel>
     </Grid>
 </Window>

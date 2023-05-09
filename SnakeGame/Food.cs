@@ -1,13 +1,11 @@
 ﻿using System;
+using System.Drawing;
 
 namespace SnakeGame
 {
 	public class Food
 	{
-		public int Row { get; private set; }
-		public int Column { get; private set; }
-
-		public Position Location => new Position(Row, Column);
+		public Point Location { get; private set; }
 
 		private readonly int numRows;
 		private readonly int numCols;
@@ -24,8 +22,9 @@ namespace SnakeGame
 
 		public void SpawnFood()
 		{
-			Row = random.Next(0, numRows);
-			Column = random.Next(0, numCols);
+			int row = random.Next(0, numRows);
+			int column = random.Next(0, numCols);
+			Location = new Point(column, row);
 		}
 	}
 }
