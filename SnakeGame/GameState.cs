@@ -36,12 +36,22 @@ namespace SnakeGame
 
 		public void MoveSnake(Direction direction)
 		{
+			// Check if the new direction is opposite to the current one
+			if ((CurrentDirection == Direction.Up && direction == Direction.Down) ||
+				(CurrentDirection == Direction.Down && direction == Direction.Up) ||
+				(CurrentDirection == Direction.Left && direction == Direction.Right) ||
+				(CurrentDirection == Direction.Right && direction == Direction.Left))
+			{
+				// If it is, don't change the direction
+				direction = CurrentDirection;
+			}
+
 			CurrentDirection = direction;
 			Snake.Move(direction);
 
 			if (Snake.GetHead().X < 0 || Snake.GetHead().X >= numCols ||
-			    Snake.GetHead().Y < 0 || Snake.GetHead().Y >= numRows ||
-			    Snake.CollidesWithSelf())
+				Snake.GetHead().Y < 0 || Snake.GetHead().Y >= numRows ||
+				Snake.CollidesWithSelf())
 			{
 				GameOver = true;
 				return;
@@ -53,6 +63,7 @@ namespace SnakeGame
 				Food = GenerateNewFood();
 			}
 		}
+
 
 		private Food GenerateNewFood()
 		{

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,7 +19,12 @@ namespace SnakeGame
 		public MainWindow()
 		{
 			InitializeComponent();
-			gameState = new GameState(20, 20);
+
+			int cellSize = 20;
+			int gridWidth = (int)GameCanvas.Width / cellSize;  // This should give you 25, not 20
+			int gridHeight = (int)GameCanvas.Height / cellSize; // This should give you 25, not 20
+
+			gameState = new GameState(gridWidth, gridHeight);
 
 			DrawSnake(gameState.Snake);
 			DrawFood(gameState.Food);
@@ -33,27 +39,42 @@ namespace SnakeGame
 
 		private void GameTimer_Tick(object sender, EventArgs e)
 		{
-			if (!gameStarted) return;
-
-			gameState.MoveSnake(gameState.CurrentDirection);
-
-			// Check if the snake collides with the food and update the score
-			if (gameState.Snake.CollidesWith(gameState.Food.Location))
+			try
 			{
-				score++; // Increment the score
-				UpdateScore(); // Update the score in the UI
-				gameState.Food.SpawnFood(); // Spawn a new food
+				if (!gameStarted)
+				{
+					Debug.WriteLine("Game not started.");
+					return;
+				}
+
+				gameState.MoveSnake(gameState.CurrentDirection);
+
+				// Check if the snake collides with the food and update the score
+				if (gameState.Snake.CollidesWith(gameState.Food.Location))
+				{
+					score++; // Increment the score
+					UpdateScore(); // Update the score in the UI
+					gameState.Food.SpawnFood(); // Spawn a new food
+					Debug.WriteLine($"Score updated: {score}");
+				}
+
+				DrawSnake(gameState.Snake);
+				DrawFood(gameState.Food);
+
+				if (gameState.GameOver)
+				{
+					gameTimer.Stop();
+					MessageBox.Show("Game Over!");
+					Debug.WriteLine("Game Over triggered.");
+				}
 			}
-
-			DrawSnake(gameState.Snake);
-			DrawFood(gameState.Food);
-
-			if (gameState.GameOver)
+			catch (Exception ex)
 			{
-				gameTimer.Stop();
-				MessageBox.Show("Game Over!");
+				Debug.WriteLine($"Error in timer tick: {ex.Message}");
+				gameTimer.Stop();  // stop the game
 			}
 		}
+
 
 		private void UpdateScore()
 		{
@@ -117,40 +138,29 @@ namespace SnakeGame
 				return;
 			}
 
-			Direction newDirection = gameState.CurrentDirection;
+			Direction newDirection;
 
 			switch (e.Key)
 			{
 				case Key.Up:
-					if (newDirection != Direction.Down)
-					{
-						newDirection = Direction.Up;
-					}
+					newDirection = Direction.Up;
 					break;
 				case Key.Down:
-					if (newDirection != Direction.Up)
-					{
-						newDirection = Direction.Down;
-					}
+					newDirection = Direction.Down;
 					break;
 				case Key.Left:
-					if (newDirection != Direction.Right)
-					{
-						newDirection = Direction.Left;
-					}
+					newDirection = Direction.Left;
 					break;
 				case Key.Right:
-					if (newDirection != Direction.Left)
-					{
-						newDirection = Direction.Right;
-					}
+					newDirection = Direction.Right;
 					break;
 				default:
-					break;
+					return;
 			}
 
-			gameState.CurrentDirection = newDirection;
+			gameState.MoveSnake(newDirection);
 		}
+
 
 		private void DrawSnake(Snake snake)
 		{
