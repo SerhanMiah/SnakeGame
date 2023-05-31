@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -9,32 +11,52 @@ using System.Windows.Threading;
 
 namespace SnakeGame
 {
-	public partial class MainWindow : Window
+	public partial class MainWindow : Window, INotifyPropertyChanged
 	{
 		private GameState gameState;
 		private DispatcherTimer gameTimer;
 		private bool gameStarted = false;
 		private int score;
 
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public int Score
+		{
+			get { return score; }
+			set
+			{
+				if (score != value)
+				{
+					score = value;
+					OnPropertyChanged();
+				}
+			}
+		}
+
 		public MainWindow()
 		{
 			InitializeComponent();
+			DataContext = this;
 
 			int cellSize = 20;
-			int gridWidth = (int)GameCanvas.Width / cellSize;  // This should give you 25, not 20
-			int gridHeight = (int)GameCanvas.Height / cellSize; // This should give you 25, not 20
+			int gridWidth = (int)GameCanvas.Width / cellSize;
+			int gridHeight = (int)GameCanvas.Height / cellSize;
 
 			gameState = new GameState(gridWidth, gridHeight);
 
 			DrawSnake(gameState.Snake);
 			DrawFood(gameState.Food);
 
-			score = 0;
-			UpdateScore();
+			Score = 0;
 
 			gameTimer = new DispatcherTimer();
 			gameTimer.Interval = TimeSpan.FromMilliseconds(100);
 			gameTimer.Tick += GameTimer_Tick;
+		}
+
+		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
 		private void GameTimer_Tick(object sender, EventArgs e)
@@ -52,10 +74,9 @@ namespace SnakeGame
 				// Check if the snake collides with the food and update the score
 				if (gameState.Snake.CollidesWith(gameState.Food.Location))
 				{
-					score++; // Increment the score
-					UpdateScore(); // Update the score in the UI
-					gameState.Food.SpawnFood(); // Spawn a new food
-					Debug.WriteLine($"Score updated: {score}");
+					UpdateScore(); // Increment the score
+					gameState.Food.SpawnFood(); // Spawn a new food before updating the score UI
+					Debug.WriteLine($"Score updated: {Score}");
 				}
 
 				DrawSnake(gameState.Snake);
@@ -78,9 +99,8 @@ namespace SnakeGame
 
 		private void UpdateScore()
 		{
-			ScoreText.Text = $"Score: {score}";
+			Score += 10;
 		}
-
 
 		private void StartButton_Click(object sender, RoutedEventArgs e)
 		{
@@ -97,7 +117,6 @@ namespace SnakeGame
 				gameTimer.Stop();
 			}
 		}
-
 		private void ResetButton_Click(object sender, RoutedEventArgs e)
 		{
 			gameStarted = false;
@@ -114,6 +133,7 @@ namespace SnakeGame
 			DrawFood(gameState.Food);
 		}
 
+
 		private void DrawFood(Food food)
 		{
 			var rectangle = new Rectangle
@@ -128,8 +148,6 @@ namespace SnakeGame
 
 			GameCanvas.Children.Add(rectangle);
 		}
-
-
 
 		private void Window_KeyDown(object sender, KeyEventArgs e)
 		{
