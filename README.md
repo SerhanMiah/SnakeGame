@@ -61,16 +61,6 @@ Next, I created a new WPF App (.NET Framework) project in Visual Studio, giving 
 3. MainWindow Design:
 I opened MainWindow.xaml and defined the basic structure of the main game window. I set up the height and width, background color, window title, and disabled resizing to maintain the aspect ratio of the game.
 
-xaml
-Copy code
-<Window x:Class="SnakeGame.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Snake Game" Height="600" Width="800"
-        ResizeMode="NoResize" Background="Black">
-    <Canvas x:Name="GameBoard"/>
-</Window>
-
 In the MainWindow, I also added a Canvas element named "GameBoard" which would be used to draw the snake and the food.
 
 4. Class Definitions:
