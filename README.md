@@ -1,6 +1,6 @@
 # Project - Snake Game in C#
 
-
+![game-screenshot](./SnakeGame/Assets/ScreenShots/SnakeStart.png)
 
 
 ## Project Overview
@@ -43,6 +43,55 @@ By combining these components, the project provides a complete and functional Sn
 
 Note: In the case of the Snake game in C# using WPF, the front end and back end are closely tied together since it's a standalone desktop application. Thus, the front end and back end technologies are mostly integrated.
 
+## Deployment
+To deploy a C# XAML project from a Git repository, follow these steps:
+
+### 1. Environment Setup:
+* Before you begin, ensure that you have the necessary tools and dependencies installed:
+
+* Visual Studio: Install Visual Studio, as it provides a comprehensive development environment for C# and XAML applications.
+* .NET SDK: Make sure you have the .NET SDK installed to compile and run the C# code.
+* Git: Install Git to clone the repository and manage version control.
+
+### 2. Repository Setup:
+- Either clone or download the source code from the provided GitHub repository link.
+- Link to GitHub repository [https://github.com/SerhanMiah/SnakeGame]
+
+## Deployment Steps:
+
+### 3. Building and Running the Project::
+Now, you can build and run your C# XAML project using Visual Studio:
+
+* Open Visual Studio.
+
+* Click on "File" -> "Open" -> "Project/Solution" and navigate to the folder where you cloned the repository.
+
+* Select the solution or project file for your C# XAML application and open it.
+
+* Build the project by clicking on "Build" -> "Build Solution" or pressing Ctrl + Shift + B.
+
+Set the startup project:
+
+* Right-click on the project you want to run (usually the one containing the main window or entry point).
+  Select "Set as StartUp Project."
+  Run the project by clicking on the "Start" button (usually a green arrow) or pressing F5.
+
+* Your C# XAML application should now run within Visual Studio. You can interact with and test it locally.
+
+### 4. Publishing and Deployment:
+To deploy your C# XAML application to users, you need to publish it:
+
+* Right-click on your project in Visual Studio's Solution Explorer.
+
+* Select "Publish."
+
+* Choose the target platform and method of deployment. You can publish to various platforms, including Windows Installer, ClickOnce, or create an MSI installer. Follow the prompts to configure your deployment settings.
+
+* Publish the application to generate the deployment package.
+
+* Once published, you will have an installer or package that you can distribute to users.
+
+* Please note that the specific steps for publishing and deployment may vary based on your project type and requirements. Ensure that you follow best practices for securing and distributing your application.
 
 ## Phase
 
@@ -117,30 +166,37 @@ The GameState class encapsulates all the rules and mechanics of the game, making
 ## Final Product:
 
 Game Page
+![game-screenshot](./SnakeGame/Assets/ScreenShots/SnakeStart.png)
 
 
 
+Game Over
+![game-screenshot](./SnakeGame/Assets/ScreenShots/SnakeGameOver.png)
 
 
 ## Wins & Challenges
 
 ### Win
+Understanding OOP and Accessors: Successfully grasping the concepts of Object-Oriented Programming (OOP) and how accessors work in C# was a significant achievement. This knowledge was crucial when creating the Snake game.
 
-
-
+Utilizing List Properties/Methods: Effectively using the properties and methods of a List to manage the growth of the snake in the game was another win. This helped in dynamically adding elements to the back of the snake as it grew.
 
 ### Challenges
+Adapting to Input Handling: One of the major challenges was adapting to handling inputs in C#, especially coming from a background in React. Managing user input and incorporating it into the game logic was a learning curve.
 
+XAML Integration: Working with XAML for the frontend of the game posed challenges. Integrating the game logic with the XAML components, such as adding a score feature, proved to be a complex task.
 
 ### Bugs
-
-
-
+XAML Counter Issue: A significant bug in the game was related to adding a counter in the XAML. This caused various issues with the game state, impacting the gameplay experience.
 
 ## Future Content and Improvements:
-
-
-
+Unfortunately, implementing a scoring feature in the game proved challenging, and attempts to add it directly within the XAML caused problems. Given more time and a deeper understanding of XAML formatting, finding a solution for the scoring system could be explored.
 
 
 ## Key learnings
+This project marked the first time incorporating vanilla C# programming and Object-Oriented Programming (OOP) into a full-fledged application. Some key takeaways and learnings from this experience include:
+
+Understanding OOP principles and applying them effectively.
+Learning how to split classes into separate modules for better organization and reusability.
+Gaining experience in creating a frontend using XAML.
+Adapting to a new programming paradigm, especially when transitioning from web development to desktop application development.
